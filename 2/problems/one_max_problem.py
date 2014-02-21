@@ -4,21 +4,20 @@ from genomes.bit_vector_genome import BitVectorGenome
 
 
 class OneMaxProblem:
-    #highest_found_fitness = 0
-
     def __init__(self,
                  vector_length,
                  fitness_function,
+                 adult_selection_function,
                  population_size,
                  n_reproducing_couples,
                  crossover_chance,
                  mutation_chance):
         self.fitness_function = fitness_function
+        self.adult_selection_function = adult_selection_function
+
         self.crossover_chance = crossover_chance
         self.mutation_chance = mutation_chance
-
         self.vector_length = vector_length
-
         self.population_size = population_size
         self.n_reproducing_couples = n_reproducing_couples
 
@@ -36,25 +35,14 @@ class OneMaxProblem:
     def test_children_and_select_adults(self,
                                         children,
                                         adults):
-
         children_fitness_scores = self._calculate_fitness_scores(children)
         adults_fitness_scores = self._calculate_fitness_scores(adults)
 
-        #logging.info("Fitness scores in:\nChildren: %s\nParents %s",
-                     #children_fitness_scores,
-                     #adults_fitness_scores)
-
-        #if max(children_fitness_scores) > self.highest_found_fitness:
-            #self.highest_found_fitness = max(children_fitness_scores)
-            #print self.highest_found_fitness
-
-        #return children
-
-        new_adults = self.\
-            _select_adults(children,
-                           children_fitness_scores,
-                           adults,
-                           adults_fitness_scores)
+        new_adults = self.adult_selection_function(children,
+                                                   children_fitness_scores,
+                                                   adults,
+                                                   adults_fitness_scores,
+                                                   self.population_size)
 
         logging.info("Fitness scores out: %s",
                      self._calculate_fitness_scores(new_adults))
@@ -75,22 +63,6 @@ class OneMaxProblem:
         #     ]) / float(self.vector_length)
 
         return fitness_scores
-
-    def _select_adults(self,
-                       children,
-                       children_fitness_scores,
-                       adults,
-                       adults_fitness_scores):
-
-        gene_pool = children + adults
-        fitness_pool = children_fitness_scores + adults_fitness_scores
-        fitness_zipped_genes = zip(fitness_pool, gene_pool)
-        fitness_zipped_genes.sort(key=lambda arr: arr[0],
-                                  reverse=True)
-        selected_adults = map(lambda arr: arr[1],
-                              fitness_zipped_genes[:self.population_size])
-
-        return selected_adults
 
     def select_parents(self,
                        adults):

@@ -1,5 +1,6 @@
 from problems.one_max_problem import OneMaxProblem
-from fitness_functions import one_max_fitness
+import fitness_functions
+import adult_selection_functions
 import logging
 import multiprocessing
 
@@ -81,30 +82,33 @@ def set_or_default(label, variable):
 
 def omx_factory(i):
     print "I'm {0}".format(i)
-    one_max_problem = OneMaxProblem(vector_length=VECTOR_LENGTH,
-                                    fitness_function=one_max_fitness,
-                                    population_size=POPULATION_SIZE,
-                                    n_reproducing_couples=
-                                    N_REPRODUCING_COUPLES,
-                                    crossover_chance=CROSSOVER_CHANCE,
-                                    mutation_chance=MUTATION_CHANCE)
+    omp = OneMaxProblem(vector_length=VECTOR_LENGTH,
+                        fitness_function=FITNESS_FUNCTION,
+                        adult_selection_function=ADULT_SELECTION_FUNCTION,
+                        population_size=POPULATION_SIZE,
+                        n_reproducing_couples=N_REPRODUCING_COUPLES,
+                        crossover_chance=CROSSOVER_CHANCE,
+                        mutation_chance=MUTATION_CHANCE)
 
-    return GenericEaSolver(one_max_problem,
+    return GenericEaSolver(omp,
                            GENERATION_LIMIT).start_simulation()
 
 ##########################
 # Initializing variables #
 ##########################
 
-POPULATION_SIZE = 100
-N_REPRODUCING_COUPLES = POPULATION_SIZE / 2
+FITNESS_FUNCTION = fitness_functions.one_max_fitness
+ADULT_SELECTION_FUNCTION = adult_selection_functions.generational_mixing
+
+N_RUNS = 10
+
+POPULATION_SIZE = 200
+N_REPRODUCING_COUPLES = POPULATION_SIZE * 3 / 4
 VECTOR_LENGTH = 40
-GENERATION_LIMIT = 10000
+GENERATION_LIMIT = 1000
 
-CROSSOVER_CHANCE = 0.9
-MUTATION_CHANCE = 0.01
-
-N_RUNS = 100
+CROSSOVER_CHANCE = 0.1
+MUTATION_CHANCE = 0.02
 
 #############################
 # Be nice, say hi to people #
