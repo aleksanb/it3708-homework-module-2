@@ -8,12 +8,14 @@ class OneMaxProblem:
                  vector_length,
                  fitness_function,
                  adult_selection_function,
+                 parent_selection_function,
                  population_size,
                  n_reproducing_couples,
                  crossover_chance,
                  mutation_chance):
         self.fitness_function = fitness_function
         self.adult_selection_function = adult_selection_function
+        self.parent_selection_function = parent_selection_function
 
         self.crossover_chance = crossover_chance
         self.mutation_chance = mutation_chance
@@ -38,10 +40,11 @@ class OneMaxProblem:
         children_fitness_scores = self._calculate_fitness_scores(children)
         adults_fitness_scores = self._calculate_fitness_scores(adults)
 
-        new_adults = self.adult_selection_function(children,
-                                                   children_fitness_scores,
-                                                   adults,
-                                                   adults_fitness_scores,
+        children_with_fitness = zip(children, children_fitness_scores)
+        adults_with_fitness = zip(adults, adults_fitness_scores)
+
+        new_adults = self.adult_selection_function(children_with_fitness,
+                                                   adults_with_fitness,
                                                    self.population_size)
 
         logging.info("Fitness scores out: %s",
@@ -56,43 +59,18 @@ class OneMaxProblem:
             for phenotype in phenotypes
             ]
 
-        # fitness_average = sum(fitness_scores) / self.vector_length
-        # fitness_variance = sum([
-        #     (fitness_score - fitness_average)**2
-        #     for fitness_score in fitness_scores
-        #     ]) / float(self.vector_length)
-
         return fitness_scores
 
     def select_parents(self,
                        adults):
-        sum_fitness = float(sum([
-            self.fitness_function(adult) for adult in adults]))
+        adults_fitness = self._calculate_fitness_scores(adults)
 
-        choices = {
-            adult: self.fitness_function(adult)
-            for adult in adults
-            }
-
-        parents = []
-
-        for i in range(self.n_reproducing_couples):
-            mother = self._roulette_wheel(sum_fitness, choices)
-            father = self._roulette_wheel(sum_fitness, choices)
-            parents.append((mother, father))
+        parents =\
+            self.parent_selection_function(adults,
+                                           adults_fitness,
+                                           self.n_reproducing_couples)
 
         return parents
-
-    def _roulette_wheel(self,
-                        sum_fitness,
-                        choices):
-        fraction = random.uniform(0, sum_fitness)
-        accu = 0
-
-        for adult, fitness in choices.items():
-            accu += fitness
-            if accu >= fraction:
-                return adult
 
     def reproduce(self, parents):
         offspring_genotypes = []

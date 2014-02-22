@@ -1,8 +1,10 @@
 from problems.one_max_problem import OneMaxProblem
-import fitness_functions
-import adult_selection_functions
 import logging
 import multiprocessing
+
+import fitness_functions
+import adult_selection_functions
+import parent_selection_functions
 
 
 class GenericEaSolver:
@@ -29,17 +31,16 @@ class GenericEaSolver:
 
         while generation < self.generation_limit and not winner:
             generation += 1
-
             logging.info("\n*** Generation %i ***", generation)
 
-            children = self.ea_problem.generate_phenotypes_from_genotypes(
-                genotypes
-            )
+            children =\
+                self.ea_problem.generate_phenotypes_from_genotypes(genotypes)
 
             logging.info("Generated %i children.", len(children))
 
-            adults = self.ea_problem.test_children_and_select_adults(children,
-                                                                     adults)
+            adults =\
+                self.ea_problem.test_children_and_select_adults(children,
+                                                                adults)
             logging.info("But only %i children grew up", len(adults))
 
             parents = self.ea_problem.select_parents(adults)
@@ -55,9 +56,9 @@ class GenericEaSolver:
         return generation
 
 
-##########################
-# Begin setup            #
-##########################
+############################
+## Begin setup            ##
+############################
 
 def print_variables():
     print "Number of runs:      ", N_RUNS, "\n", \
@@ -85,6 +86,7 @@ def omx_factory(i):
     omp = OneMaxProblem(vector_length=VECTOR_LENGTH,
                         fitness_function=FITNESS_FUNCTION,
                         adult_selection_function=ADULT_SELECTION_FUNCTION,
+                        parent_selection_function=PARENT_SELECTION_FUNCTION,
                         population_size=POPULATION_SIZE,
                         n_reproducing_couples=N_REPRODUCING_COUPLES,
                         crossover_chance=CROSSOVER_CHANCE,
@@ -93,26 +95,36 @@ def omx_factory(i):
     return GenericEaSolver(omp,
                            GENERATION_LIMIT).start_simulation()
 
-##########################
-# Initializing variables #
-##########################
+############################
+## Initializing variables ##
+############################
 
-FITNESS_FUNCTION = fitness_functions.one_max_fitness
-ADULT_SELECTION_FUNCTION = adult_selection_functions.generational_mixing
+FITNESS_FUNCTION =\
+    fitness_functions.one_max_fitness
 
-N_RUNS = 10
+ADULT_SELECTION_FUNCTION =\
+    adult_selection_functions.full_generational_replacement
+
+PARENT_SELECTION_FUNCTION =\
+    parent_selection_functions\
+    .sigma_scaling
+    #.tournament_selection_factory(tournament_size=20, epsilon=0.2)
+
+N_RUNS = multiprocessing.cpu_count() * 4
 
 POPULATION_SIZE = 200
-N_REPRODUCING_COUPLES = POPULATION_SIZE * 3 / 4
+N_REPRODUCING_COUPLES = POPULATION_SIZE / 2
 VECTOR_LENGTH = 40
 GENERATION_LIMIT = 1000
 
-CROSSOVER_CHANCE = 0.1
+CROSSOVER_CHANCE = 1
 MUTATION_CHANCE = 0.02
 
-#############################
-# Be nice, say hi to people #
-#############################
+NO_MERCY = True
+
+###############################
+## Be nice, say hi to people ##
+###############################
 
 print_with_wrap("Welcome to Generic EA Solver Version 1337")
 print_variables()
@@ -122,10 +134,11 @@ print_variables()
 # Creating CPU threadpool #
 ###########################
 
-cpus = multiprocessing.cpu_count() - 1
+cpus = multiprocessing.cpu_count()
 print "{0} computational cores available, ".format(cpus) +\
-    "redirecting all power to EA-1337\n"
-pool = multiprocessing.Pool(processes=cpus)
+    "redirecting {0} cores to EA-1337\n".format(cpus - 1 + NO_MERCY)
+
+pool = multiprocessing.Pool(processes=cpus - 1 + NO_MERCY)
 
 while True:
     default_or_exit = raw_input("Customize defaults? (y/n/q)")
@@ -133,22 +146,21 @@ while True:
         N_RUNS = set_or_default("Number of runs", N_RUNS)
         POPULATION_SIZE = set_or_default("Children pool size",
                                          POPULATION_SIZE)
-        N_REPRODUCING_COUPLES = set_or_default("Number of reproducing couples",
+        N_REPRODUCING_COUPLES = set_or_default("Reproducing couples",
                                                N_REPRODUCING_COUPLES)
-        VECTOR_LENGTH = set_or_default("Bit vector length", VECTOR_LENGTH)
-        GENERATION_LIMIT = set_or_default("Generation limit", GENERATION_LIMIT)
-        CROSSOVER_CHANCE = set_or_default("Crosover rate", CROSSOVER_CHANCE)
-        MUTATION_CHANCE = set_or_default("Mutation rate", MUTATION_CHANCE)
+        VECTOR_LENGTH = set_or_default("Bit vector length",
+                                       VECTOR_LENGTH)
+        GENERATION_LIMIT = set_or_default("Generation limit",
+                                          GENERATION_LIMIT)
+        CROSSOVER_CHANCE = set_or_default("Crosover rate",
+                                          CROSSOVER_CHANCE)
+        MUTATION_CHANCE = set_or_default("Mutation rate",
+                                         MUTATION_CHANCE)
     elif default_or_exit == "q":
         break
 
     print_with_wrap("Starting simulation ({} runs)".format(N_RUNS))
-
     term_gens = pool.map(omx_factory, xrange(N_RUNS))
-
-    #for i in range(N_RUNS):
-        #term_gens.append(omx_factory(i))
-        #print "Finished with run {}".format(i)
 
     avg_term_gen = sum(term_gens) / float(N_RUNS)
     term_gen_var = sum([(term_gen - avg_term_gen) ** 2
