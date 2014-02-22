@@ -85,8 +85,10 @@ def omx_factory(i):
     print "I'm {0}".format(i)
     omp = OneMaxProblem(vector_length=VECTOR_LENGTH,
                         fitness_function=FITNESS_FUNCTION,
-                        adult_selection_function=ADULT_SELECTION_FUNCTION,
-                        parent_selection_function=PARENT_SELECTION_FUNCTION,
+                        adult_selection_function=
+                        ADULT_SELECTION_FUNCTION,
+                        parent_selection_function=
+                        PARENT_SELECTION_FUNCTION,
                         population_size=POPULATION_SIZE,
                         n_reproducing_couples=N_REPRODUCING_COUPLES,
                         crossover_chance=CROSSOVER_CHANCE,
@@ -100,25 +102,32 @@ def omx_factory(i):
 ############################
 
 FITNESS_FUNCTION =\
-    fitness_functions.one_max_fitness
+    fitness_functions\
+    .omf_punish
+    #.omf_reward
 
 ADULT_SELECTION_FUNCTION =\
-    adult_selection_functions.full_generational_replacement
+    adult_selection_functions\
+    .full_generational_replacement
+    #.over_production
+    #.generational_mixing
 
 PARENT_SELECTION_FUNCTION =\
     parent_selection_functions\
-    .sigma_scaling
+    .fitness_proportionate
+    #.sigma_scaling
     #.tournament_selection_factory(tournament_size=20, epsilon=0.2)
 
+#logging.basicConfig(level=logging.INFO)
 N_RUNS = multiprocessing.cpu_count() * 4
 
 POPULATION_SIZE = 200
 N_REPRODUCING_COUPLES = POPULATION_SIZE / 2
 VECTOR_LENGTH = 40
-GENERATION_LIMIT = 1000
+GENERATION_LIMIT = 400
 
-CROSSOVER_CHANCE = 1
-MUTATION_CHANCE = 0.02
+CROSSOVER_CHANCE = 1.000
+MUTATION_CHANCE = 0.001
 
 NO_MERCY = True
 
@@ -128,17 +137,20 @@ NO_MERCY = True
 
 print_with_wrap("Welcome to Generic EA Solver Version 1337")
 print_variables()
-#logging.basicConfig(level=logging.INFO)
 
-###########################
-# Creating CPU threadpool #
-###########################
+#############################
+## Creating CPU threadpool ##
+#############################
 
 cpus = multiprocessing.cpu_count()
 print "{0} computational cores available, ".format(cpus) +\
     "redirecting {0} cores to EA-1337\n".format(cpus - 1 + NO_MERCY)
 
 pool = multiprocessing.Pool(processes=cpus - 1 + NO_MERCY)
+
+#############################
+## Main loop               ##
+#############################
 
 while True:
     default_or_exit = raw_input("Customize defaults? (y/n/q)")

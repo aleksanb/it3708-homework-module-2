@@ -24,11 +24,9 @@ class OneMaxProblem:
         self.n_reproducing_couples = n_reproducing_couples
 
     def generate_initial_genotypes(self):
-        return [
-            BitVectorGenome(vector_length=self.vector_length,
-                            randomize=True)
-            for child in range(self.population_size)
-            ]
+        return [BitVectorGenome(vector_length=self.vector_length,
+                                randomize=True)
+                for child in range(self.population_size)]
 
     def generate_phenotypes_from_genotypes(self,
                                            genotypes):
@@ -76,7 +74,6 @@ class OneMaxProblem:
         offspring_genotypes = []
 
         for mother, father in parents:
-            # Single point crossover
             if random.random() > self.crossover_chance:
                 offspring_genotypes\
                     .append(BitVectorGenome(bit_vector_genome=mother))
@@ -96,15 +93,19 @@ class OneMaxProblem:
 
         for offspring_genotype in offspring_genotypes:
             for i in range(len(offspring_genotype.value_vector)):
-                if random.random() <= self.mutation_chance:
+                if random.random() < self.mutation_chance:
                     offspring_genotype.value_vector[i] =\
                         1 - offspring_genotype.value_vector[i]
 
         return offspring_genotypes
 
     def get_winner(self, genotypes):
+        win_fitness =\
+            self.fitness_function(BitVectorGenome(
+                                  vector_length=self.vector_length,
+                                  create_solution=True))
         for genotype in genotypes:
-            if (self.vector_length) == self.fitness_function(genotype):
+            if self.fitness_function(genotype) == win_fitness:
                 return genotype
 
         return None
