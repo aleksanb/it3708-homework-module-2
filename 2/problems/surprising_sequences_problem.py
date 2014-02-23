@@ -3,7 +3,7 @@ import logging
 from genomes.bit_vector_genome import BitVectorGenome
 
 
-class OneMaxProblem(object):
+class SurprisingSequencesProblem(object):
     def __init__(self,
                  vector_length,
                  fitness_function,
@@ -13,7 +13,8 @@ class OneMaxProblem(object):
                  population_size,
                  n_reproducing_couples,
                  crossover_chance,
-                 mutation_chance):
+                 mutation_chance,
+                 alphabet_size):
         self.fitness_function = fitness_function
         self.adult_selection_function = adult_selection_function
         self.parent_selection_function = parent_selection_function
@@ -25,9 +26,11 @@ class OneMaxProblem(object):
         self.vector_length = vector_length
         self.population_size = population_size
         self.n_reproducing_couples = n_reproducing_couples
+        self.alphabet_size = alphabet_size
 
     def generate_initial_genotypes(self):
         return [BitVectorGenome(vector_length=self.vector_length,
+                                alphabet_size=self.alphabet_size,
                                 randomize=True)
                 for child in range(self.population_size)]
 
@@ -44,17 +47,17 @@ class OneMaxProblem(object):
         children_with_fitness = zip(children, children_fitness_scores)
         adults_with_fitness = zip(adults, adults_fitness_scores)
 
-        # logging.info("Fitness in:\nChildren %s\nAdults %s",
-        #              children_with_fitness,
-        #              adults_with_fitness)
+        logging.info("Fitness in:\nChildren %s\nAdults %s",
+                     children_with_fitness,
+                     adults_with_fitness)
 
         new_adults = self.adult_selection_function(children_with_fitness,
                                                    adults_with_fitness,
                                                    self.population_size)
 
-        # logging.info("Fitness scores out: %s",
-        #              zip(new_adults,
-        #                  self._calculate_fitness_scores(new_adults)))
+        logging.info("Fitness scores out: %s",
+                     zip(new_adults,
+                         self._calculate_fitness_scores(new_adults)))
 
         return new_adults
 
@@ -103,16 +106,12 @@ class OneMaxProblem(object):
             for i in range(len(offspring_genotype.value_vector)):
                 if random.random() < self.mutation_chance:
                     offspring_genotype.value_vector[i] =\
-                        1 - offspring_genotype.value_vector[i]
+                        random.randint(0, self.alphabet_size)
 
-        return offspring_genotypes,\
-            self._calculate_fitness_scores(offspring_genotypes)
+        return offspring_genotypes
 
     def get_winner(self, genotypes):
-        win_fitness =\
-            self.fitness_function(BitVectorGenome(
-                                  vector_length=self.vector_length,
-                                  create_solution=True))
+        win_fitness = 1.0
         for genotype in genotypes:
             if self.fitness_function(genotype) == win_fitness:
                 return genotype

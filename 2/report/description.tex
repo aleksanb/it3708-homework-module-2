@@ -1,0 +1,12 @@
+\section{Description of EA}
+
+The EA program consists of the following modules.
+
+\begin{enumerate}
+\item A Generic EA solver class. Acts as the evolutionary loop, calling the correct methods on the EA problem.
+\item A generic EA problem class. All functions are sent in as parameters, so this class simply acts as the skeleton which ties the hot-swappable components together.
+\item Collections of fitness functions, adult selection functions, parent selection functions and genotype to phenotype converters.
+\item A testrunner with logging and statistical capabilities.
+\end{enumerate}
+
+Composing an EA problem is as simple as selecting the required functions from each set (parent selection etc), bind them together using the generic EA problem class, and then apply it to the EA solver.

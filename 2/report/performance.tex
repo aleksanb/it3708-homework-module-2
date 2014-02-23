@@ -1,0 +1,7 @@
+\section{40-bit One-Max with FGR and FP}
+
+Chosing a good fitness function was paramount in minimizing the needed population size. A punishing one was chosen (fitness proportionate with the inverse of the error), which greatly increased the effectiveness of fitness-proportionate scaling due to greater spacing of good phenotypes.
+
+A population size of 80 was consistently able to terminate in 100 generations or less (52 generations average, standard deviation 12.61, 100 runs sample size).
+
+A per bit mutation chance of $(0.01 > \epsilon > 0.001)$ and a crossover rate of $ \epsilon > 0.9 $ was found to be optimal. Higher mutation chances led to randomized search, the opposite causing stagnation of the gene pool due to cycles and lack of variance. If none of the genomes have bit $n$ set, no amount of crossover can generate a solution.

@@ -1,0 +1,43 @@
+\section{Code modularity}
+
+A EA problem is composed by providing the functions one might want to use to an implementation of the generic EA problem class \ref{lst:constructing-ea-problem}. The Generic EA solver is initialized with the problem, when to terminate the simulation, and then executed.
+
+\begin{lstlisting}[caption={constructing an ea problem}, label={lst:constructing-ea-problem}]
+ea_problem = EA_PROBLEM(vector_length=VECTOR_LENGTH,
+                            fitness_function=FITNESS_FUNCTION,
+                            adult_selection_function=ADULT_SELECTION_FUNCTION,
+                            # Parameters omitted for brevity
+                            n_reproducing_couples=N_REPRODUCING_COUPLES,
+                            crossover_chance=CROSSOVER_CHANCE,
+                            mutation_chance=MUTATION_CHANCE)
+
+generation, winner = generic_ea_solver\
+    .GenericEaSolver(ea_problem,
+                     GENERATION_LIMIT).start_simulation()
+
+\end{lstlisting}
+
+Default constants are defined as follows \ref{lst:ea-problem-constants}. For each step of the evolutionary chain one can pick and chose between multiple variants. The collection of adult selection functions contains both full generational replacement, generational mixing, and over production, for example.
+
+Overrides for values are accepted at runtime, but omitted for brevity.
+
+\begin{lstlisting}[caption={Initial values for the EA problem}, label={lst:ea-problem-constants}]
+EA_PROBLEM = one_max_problem.OneMaxProblem
+PHENO_FROM_GENO_FUNCTION = pheno_from_geno_functions\
+	.identity_function
+FITNESS_FUNCTION = fitness_functions\
+	.omf_punish
+ADULT_SELECTION_FUNCTION = adult_selection_functions\
+	.full_generational_replacement
+PARENT_SELECTION_FUNCTION = parent_selection_functions\
+	.fitness_proportionate
+
+POPULATION_SIZE = 200
+N_REPRODUCING_COUPLES = POPULATION_SIZE / 2
+VECTOR_LENGTH = 40
+GENERATION_LIMIT = 400
+
+CROSSOVER_CHANCE = 1
+MUTATION_CHANCE = 0.001
+
+\end{lstlisting}
