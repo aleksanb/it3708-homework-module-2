@@ -1,4 +1,6 @@
 \select@language {english}
-\contentsline {section}{\numberline {1}Description of EA}{1}{section.1}
+\contentsline {section}{\numberline {1}Description of the EA program}{1}{section.1}
 \contentsline {section}{\numberline {2}Code modularity}{1}{section.2}
 \contentsline {section}{\numberline {3}40-bit One-Max with FGR and FP}{2}{section.3}
+\contentsline {section}{\numberline {4}Parent selection functions}{3}{section.4}
+\contentsline {section}{\numberline {5}Modified bit vector}{4}{section.5}

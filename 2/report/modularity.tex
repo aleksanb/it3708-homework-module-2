@@ -6,7 +6,7 @@ A EA problem is composed by providing the functions one might want to use to an 
 ea_problem = EA_PROBLEM(vector_length=VECTOR_LENGTH,
                             fitness_function=FITNESS_FUNCTION,
                             adult_selection_function=ADULT_SELECTION_FUNCTION,
-                            # Parameters omitted for brevity
+                            # Some parameters omitted for brevity
                             n_reproducing_couples=N_REPRODUCING_COUPLES,
                             crossover_chance=CROSSOVER_CHANCE,
                             mutation_chance=MUTATION_CHANCE)
@@ -17,7 +17,7 @@ generation, winner = generic_ea_solver\
 
 \end{lstlisting}
 
-Default constants are defined as follows \ref{lst:ea-problem-constants}. For each step of the evolutionary chain one can pick and chose between multiple variants. The collection of adult selection functions contains both full generational replacement, generational mixing, and over production, for example.
+Default constants are defined as follows \ref{lst:ea-problem-constants}. For each step of the evolutionary chain one can pick and chose between multiple functions. The collection of adult selection functions contains both full generational replacement, generational mixing, and over production, for example.
 
 Overrides for values are accepted at runtime, but omitted for brevity.
 
@@ -25,12 +25,9 @@ Overrides for values are accepted at runtime, but omitted for brevity.
 EA_PROBLEM = one_max_problem.OneMaxProblem
 PHENO_FROM_GENO_FUNCTION = pheno_from_geno_functions\
 	.identity_function
+# Some assignments omitted for brevity
 FITNESS_FUNCTION = fitness_functions\
 	.omf_punish
-ADULT_SELECTION_FUNCTION = adult_selection_functions\
-	.full_generational_replacement
-PARENT_SELECTION_FUNCTION = parent_selection_functions\
-	.fitness_proportionate
 
 POPULATION_SIZE = 200
 N_REPRODUCING_COUPLES = POPULATION_SIZE / 2

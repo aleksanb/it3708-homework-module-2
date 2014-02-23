@@ -131,8 +131,9 @@ PHENO_FROM_GENO_FUNCTION =\
 
 FITNESS_FUNCTION =\
     fitness_functions\
-    .omf_punish
+    .omf_specific
     #.omf_reward
+    #.omf_punish
 
 ADULT_SELECTION_FUNCTION =\
     adult_selection_functions\
@@ -142,12 +143,14 @@ ADULT_SELECTION_FUNCTION =\
 
 PARENT_SELECTION_FUNCTION =\
     parent_selection_functions\
-    .fitness_proportionate
-    #.tournament_selection_factory(tournament_size=8, epsilon=0.2)
-    #.sigma_scaling"""
+    .tournament_selection_factory(tournament_size=8, epsilon=0.2)
+    #.uniform_selection
+    #.sigma_scaling
+    #.fitness_proportionate
+
 
 POPULATION_SIZE = 80
-N_REPRODUCING_COUPLES = POPULATION_SIZE / 2  # / 2
+N_REPRODUCING_COUPLES = POPULATION_SIZE * 3 / 4
 VECTOR_LENGTH = 40
 GENERATION_LIMIT = 400
 

@@ -1,0 +1,6 @@
+\section{Modified bit vector}
+\label{sec:modified-vector}
+
+Changing the target vector from all ones to a random bitvector poses only a minor jump required computational power. This due to the fact that the fitness function now has to calculate the delta between two vectors, instead of naively summing the ones. 
+
+When finding a random bitvector of length 40, tournament selection used 10.96 generations average for 100 runs (1.67 std), in line with results from finding a bit vector of all ones. An example run is included in figure \ref{fig:random-tournament}

@@ -26,7 +26,7 @@ class BitVectorGenome(object):
         else:
             if randomize is True:
                 self.value_vector = [
-                    random.randint(0, alphabet_size - 1)
+                    random.randint(0, alphabet_size)
                     for iter in range(vector_length)]
             else:
                 self.value_vector = [0 for iter in range(vector_length)]

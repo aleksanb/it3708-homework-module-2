@@ -1,0 +1,9 @@
+\section{Genetic encodings}
+
+The genetic encoding used is the bit vector genome from the One Max Problem, modified to contain a number at each index. The phenotype translation function is therefore the identity function, as the genome can be used for calculations directly
+
+\section{Fitness functions}
+
+Both fitness functions used are punishing, in that they reward genomes with few errors. The fitness is calculated as the inverse of the amount of errors found, where the error count is incremented each time an allready found sequence reappears.
+
+The Globally surprising fitness function consists of a nested for-loop, comparing all pairs of characters from left to right. The locally surprising version iterates once, checking neighbors only.

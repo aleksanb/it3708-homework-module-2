@@ -9,6 +9,18 @@ def omf_punish(one_max_genome):
     return 1 / float(1 + error)
 
 
+def omf_specific(one_max_genome):
+    correct = [1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1,
+               0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1,
+               1, 0, 0, 1]
+    error = 0
+    for bit in range(len(one_max_genome.value_vector)):
+        if one_max_genome.value_vector[bit] != correct[bit]:
+            error += 1
+
+    return 1 / float(1 + error)
+
+
 def surprising_punish(genome):
     sequences = set()
     error = 0

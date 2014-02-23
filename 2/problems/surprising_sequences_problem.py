@@ -108,7 +108,8 @@ class SurprisingSequencesProblem(object):
                     offspring_genotype.value_vector[i] =\
                         random.randint(0, self.alphabet_size)
 
-        return offspring_genotypes
+        return offspring_genotypes,\
+            self._calculate_fitness_scores(offspring_genotypes)
 
     def get_winner(self, genotypes):
         win_fitness = 1.0

@@ -28,6 +28,16 @@ def _roulette_wheel(sum_fitness,
             return adult
 
 
+def uniform_selection(adults,
+                      adults_fitness,
+                      n_reproducing_couples):
+
+    uniform_fitness = [1 for i in range(len(adults))]
+    return fitness_proportionate(adults,
+                                 uniform_fitness,
+                                 n_reproducing_couples)
+
+
 def sigma_scaling(adults,
                   adults_fitness,
                   n_reproducing_couples):

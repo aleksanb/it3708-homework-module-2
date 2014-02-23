@@ -109,10 +109,11 @@ class OneMaxProblem(object):
             self._calculate_fitness_scores(offspring_genotypes)
 
     def get_winner(self, genotypes):
+        correct = [1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1,
+                   0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1,
+                   1, 0, 0, 1]
         win_fitness =\
-            self.fitness_function(BitVectorGenome(
-                                  vector_length=self.vector_length,
-                                  create_solution=True))
+            self.fitness_function(BitVectorGenome(value_vector=correct))
         for genotype in genotypes:
             if self.fitness_function(genotype) == win_fitness:
                 return genotype
